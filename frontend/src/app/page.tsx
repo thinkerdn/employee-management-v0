@@ -31,7 +31,7 @@ export default function Home() {
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const utils = trpc.useUtils();
+  const utils = trpc.useContext();
   
   // Queries
   const { data: employees, isLoading } = trpc.employee.getAll.useQuery();
