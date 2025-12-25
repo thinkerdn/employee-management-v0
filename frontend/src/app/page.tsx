@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { trpc } from '@/utils/trpc';
 
 interface Employee {
@@ -31,7 +32,7 @@ export default function Home() {
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const utils = trpc.useContext();
+  const queryClient = useQueryClient();
   
   // Queries
   const { data: employees, isLoading } = trpc.employee.getAll.useQuery();
@@ -43,14 +44,14 @@ export default function Home() {
   // Mutations
   const createEmployee = trpc.employee.create.useMutation({
     onSuccess: () => {
-      utils.employee.getAll.invalidate();
+      queryClient.invalidateQueries({ queryKey: [['employee', 'getAll']] });
       setIsModalOpen(false);
     },
   });
 
   const updateEmployee = trpc.employee.update.useMutation({
     onSuccess: () => {
-      utils.employee.getAll.invalidate();
+      queryClient.invalidateQueries({ queryKey: [['employee', 'getAll']] });
       setIsModalOpen(false);
       setEditingEmployee(null);
     },
@@ -58,7 +59,7 @@ export default function Home() {
 
   const deleteEmployee = trpc.employee.delete.useMutation({
     onSuccess: () => {
-      utils.employee.getAll.invalidate();
+      queryClient.invalidateQueries({ queryKey: [['employee', 'getAll']] });
     },
   });
 
